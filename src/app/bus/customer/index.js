@@ -16,6 +16,7 @@ export const Customer  = () => {
     );
     return (
         <>
+            <Login />
             <h1>Customer Registration</h1>
             <input type="text" name="name" placeholder="name" onChange={handleChange} />
             <input type="text" name="username" placeholder="username" onChange={handleChange} />
@@ -25,7 +26,6 @@ export const Customer  = () => {
                 customerJSX
             }
             {/*<List />*/}
-            <Login />
         </>
     )
 };

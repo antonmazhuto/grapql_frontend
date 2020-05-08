@@ -1,14 +1,20 @@
 // Core
 import { useMutation } from "@apollo/react-hooks";
 import { loader } from "graphql.macro";
-import {useState} from "react";
+import { useState } from 'react';
+
+// Hooks
+import { useForm } from "../useForm";
 
 // Queries
-
 const mutationLogin = loader('./gql/mutationLoginCustomer.graphql');
 
 export const useLogin = () => {
-    const [logIn, { loading, data, error }] = useMutation(mutationLogin, {
+    const {form, handleChange} = useForm({
+        username: '',
+        password: ""
+    });
+    const [_logIn, { loading, data, error }] = useMutation(mutationLogin, {
         onCompleted({logIn}) {
             if (logIn.token) {
                 localStorage.setItem('Token', logIn.token)
@@ -16,24 +22,12 @@ export const useLogin = () => {
         }
     });
 
-    const [values, setValues] = useState({
-        username: '',
-        password: ''
-    });
-
-    const handleChange = (event) => {
-        event.persist();
-        setValues(prevState => ({
-            ...prevState,
-            [event.target.name]: event.target.value
-        }))
-    };
-
+    const authorizedCustomer = data && data.logIn;
 
     const login = () => {
-        const { username, password } = values;
+        const { username, password } = form;
 
-        logIn({
+        _logIn({
             variables: {
                 username: username,
                 password: password
@@ -48,6 +42,6 @@ export const useLogin = () => {
         login,
         loading,
         error,
-        customer: data && data.logIn && data.logIn.customer
+        customer: authorizedCustomer && authorizedCustomer.customer
     }
 };
